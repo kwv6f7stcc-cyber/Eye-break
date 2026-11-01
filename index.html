@@ -1,186 +1,686 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>20-20-20 Eye Break</title>
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#E9F1F3">
+
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Instrument+Serif&display=swap">
+
 <style>
-:root{--bg:#000;--ink:#F2F2F2;--mute:#8C8C8C;--accent:#4FC3D6;--track:#1E1E1E;--sun:#FFB347;color-scheme:dark;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-*{box-sizing:border-box}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-html,body{margin:0;min-height:100%}
-body{background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif}
-body[data-phase="break"]{--accent:var(--sun)}
-main{max-width:420px;margin:0 auto;padding:28px 20px 40px;display:flex;flex-direction:column;align-items:center;gap:20px}
-h1{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:2rem;margin:8px 0 0;text-align:center;line-height:1.15}
-.sub{color:var(--mute);margin:0;text-align:center;font-size:.95rem;min-height:2.8em;max-width:34ch}
-.ring{position:relative;width:min(78vw,300px);aspect-ratio:1}
-.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
-.ring circle{fill:none;stroke-width:10;stroke-linecap:round}
-.ring .t{stroke:var(--track)}
-.ring .p{stroke:var(--accent)}
-.read{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px}
-.time{font-family:"Instrument Serif",Georgia,serif;font-size:4.2rem;line-height:1;font-variant-numeric:tabular-nums}
-.time.sm{font-size:2.4rem}
-.lbl{color:var(--mute);font-size:.9rem;margin-top:6px}
-.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}
-button{font:inherit;cursor:pointer;border-radius:999px;border:1.5px solid var(--accent);background:transparent;color:var(--ink);padding:11px 20px;min-height:44px}
-button.main{background:var(--accent);color:var(--bg);font-weight:700}
-button[aria-pressed="true"]{background:var(--track)}
-button:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
-input[type=time]{font:inherit;color:var(--ink);background:transparent;border:1.5px solid var(--track);border-radius:12px;padding:8px 10px;min-height:44px}
-.set{display:flex;flex-direction:column;gap:14px;width:100%;align-items:center;border-top:1px solid var(--track);padding-top:18px}
-.set span{color:var(--mute);font-size:.85rem}
-.stat{color:var(--mute);font-size:.9rem;text-align:center}
-.stat b{color:var(--ink)}
-.fine{color:var(--mute);font-size:.8rem;text-align:center;max-width:36ch;margin:0}
-.note{color:var(--sun);font-size:.85rem;text-align:center;max-width:36ch;margin:0;min-height:1.2em}
-.alert{position:fixed;inset:0;z-index:50;background:#000;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
-.alert[hidden]{display:none}
-.alert h2{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:2.4rem;margin:0 0 8px;color:var(--sun)}
-.alert p{color:var(--mute);margin:0 0 18px;max-width:30ch}
-.alert .time{margin-bottom:24px}
+:root {
+  --bg:#E9F1F3;
+  --ink:#12303A;
+  --mute:#5B7782;
+  --accent:#2F7F8F;
+  --track:#CFDFE3;
+  --sun:#B8690A;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+
+@media (prefers-color-scheme:dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#0F1E24;
+    --ink:#E4EEF0;
+    --mute:#8CA6AE;
+    --accent:#6FB6C4;
+    --track:#1F3641;
+    --sun:#F0B35A;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg:#0F1E24;
+  --ink:#E4EEF0;
+  --mute:#8CA6AE;
+  --accent:#6FB6C4;
+  --track:#1F3641;
+  --sun:#F0B35A;
+}
+
+* { box-sizing:border-box; }
+
+html,body {
+  margin:0;
+  min-height:100%;
+}
+
+body {
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"DM Sans",system-ui,sans-serif;
+}
+
+body[data-phase="break"] {
+  --accent:var(--sun);
+}
+
+main {
+  max-width:420px;
+  margin:0 auto;
+  padding:28px 20px 40px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:20px;
+}
+
+h1 {
+  font-family:"Instrument Serif",Georgia,serif;
+  font-weight:400;
+  font-size:2rem;
+  margin:8px 0 0;
+  text-align:center;
+  line-height:1.15;
+}
+
+.sub {
+  color:var(--mute);
+  margin:0;
+  text-align:center;
+  font-size:.95rem;
+  min-height:2.8em;
+  max-width:34ch;
+}
+
+.ring {
+  position:relative;
+  width:min(78vw,300px);
+  aspect-ratio:1;
+}
+
+.ring svg {
+  width:100%;
+  height:100%;
+  transform:rotate(-90deg);
+}
+
+.ring circle {
+  fill:none;
+  stroke-width:10;
+  stroke-linecap:round;
+}
+
+.ring .t { stroke:var(--track); }
+.ring .p { stroke:var(--accent); }
+
+.read {
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:0 24px;
+}
+
+.time {
+  font-family:"Instrument Serif",Georgia,serif;
+  font-size:4.2rem;
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+
+.time.sm { font-size:2.4rem; }
+
+.lbl {
+  color:var(--mute);
+  font-size:.9rem;
+  margin-top:6px;
+}
+
+.row {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+}
+
+button {
+  font:inherit;
+  cursor:pointer;
+  border-radius:999px;
+  border:1.5px solid var(--accent);
+  background:transparent;
+  color:var(--ink);
+  padding:11px 20px;
+  min-height:44px;
+}
+
+button.main {
+  background:var(--accent);
+  color:var(--bg);
+  font-weight:700;
+}
+
+button[aria-pressed="true"] {
+  background:var(--track);
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline:3px solid var(--ink);
+  outline-offset:2px;
+}
+
+input[type=time] {
+  font:inherit;
+  color:var(--ink);
+  background:transparent;
+  border:1.5px solid var(--track);
+  border-radius:12px;
+  padding:8px 10px;
+  min-height:44px;
+}
+
+.set {
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  width:100%;
+  align-items:center;
+  border-top:1px solid var(--track);
+  padding-top:18px;
+}
+
+.set span {
+  color:var(--mute);
+  font-size:.85rem;
+}
+
+.stat {
+  color:var(--mute);
+  font-size:.9rem;
+  text-align:center;
+}
+
+.stat b { color:var(--ink); }
+
+.fine {
+  color:var(--mute);
+  font-size:.8rem;
+  text-align:center;
+  max-width:36ch;
+  margin:0;
+}
 </style>
 </head>
+
 <body data-phase="work">
+
 <main>
+
   <h1 id="h">Eye break</h1>
   <p class="sub" id="sub"></p>
+
   <div class="ring" role="timer" aria-live="off">
-    <svg viewBox="0 0 200 200"><circle class="t" cx="100" cy="100" r="90"/><circle class="p" id="p" cx="100" cy="100" r="90" stroke-dasharray="565.49" stroke-dashoffset="0"/></svg>
-    <div class="read"><div class="time" id="time">--:--</div><div class="lbl" id="lbl"></div></div>
+    <svg viewBox="0 0 200 200">
+      <circle class="t" cx="100" cy="100" r="90"/>
+      <circle class="p" id="p" cx="100" cy="100" r="90"
+        stroke-dasharray="565.49"
+        stroke-dashoffset="0"/>
+    </svg>
+
+    <div class="read">
+      <div class="time" id="time">--:--</div>
+      <div class="lbl" id="lbl"></div>
+    </div>
   </div>
+
   <div class="row">
     <button class="main" id="ntf">Turn on notifications</button>
     <button id="pause">Pause reminders</button>
-    <button id="test">Test alert</button>
   </div>
+
   <div class="set">
-    <span>Remind me every</span>
-    <div class="row" id="iv"></div>
-    <span>Between</span>
-    <div class="row"><input type="time" id="st" aria-label="Start time"><span>and</span><input type="time" id="en" aria-label="End time"></div>
+
+    <span>Automatic reminders every 20 minutes</span>
+
+    <span>Active hours</span>
+
+    <div class="row">
+      <input type="time" id="st" aria-label="Start time">
+      <span>and</span>
+      <input type="time" id="en" aria-label="End time">
+    </div>
+
     <button id="snd" aria-pressed="true">Sound on</button>
+
   </div>
-  <p class="note" id="note" role="status"></p>
+
   <div class="stat" id="stat"></div>
-  <p class="fine">Reminders fire on the clock (:00, :20, :40) while this tab is open, even in the background. Pin the tab so you don’t close it. A web page can’t send alerts after it’s closed.</p>
+
+  <p class="fine">
+    Reminders occur every 20 minutes (:00, :20, :40)
+    during your selected active hours.
+    Keep this page open for reminders.
+    A web page cannot send alerts after it is closed.
+  </p>
+
 </main>
-<div class="alert" id="alert" role="alertdialog" aria-label="Eye break" hidden>
-  <div><h2>Look 20 feet away</h2><p>Find something far away and blink slowly.</p><div class="time" id="atime">00:20</div><button class="main" id="adm">Dismiss</button></div>
-</div>
+
 <script>
-(function(){
-var BREAK=20;
-function ld(k,d){try{var v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}}
-function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-var $=function(i){return document.getElementById(i)};
-var iv=ld('iv',20),st=ld('st2','00:00'),en=ld('en2','23:59'),sound=ld('sound',true),notify=ld('notify',false),paused=false,lastFired=0,actx=null,lastNote=null,testUntil=0,dismissed=0;
-var stats=ld('stats',{});
-function dayKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
-function count(){return stats[dayKey()]||0}
-function prune(){var ks=Object.keys(stats);if(ks.length>7){ks.slice(0,ks.length-7).forEach(function(k){delete stats[k]})}}
-try{if('Notification' in window&&Notification.permission==='granted'&&!notify){notify=true;sv('notify',true)}}catch(e){}
+(function() {
 
-function mins(s){var p=(s||'0:0').split(':');return (+p[0])*60+(+p[1]||0)}
-function hm(ms){return new Date(ms).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}
-function inWin(x){
-  var S=mins(st),E=mins(en);x=((x%1440)+1440)%1440;
-  if(S===E)return true;
-  return S<E?(x>=S&&x<E):(x>=S||x<E);
-}
-function compute(now){
-  var d=new Date(now),mid=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();
-  var m=(now-mid)/60000,S=mins(st),slotM=Math.floor(m/iv)*iv,slot=mid+slotM*60000;
-  if(inWin(slotM)){
-    var since=(now-slot)/1000;
-    if(since<BREAK)return{ph:'break',left:BREAK-since,total:BREAK,slot:slot};
-    if(inWin(slotM+iv))return{ph:'work',left:(slot+iv*60000-now)/1000,total:iv*60,slot:slot};
-  }
-  var today=m<S,nxt=new Date(d.getFullYear(),d.getMonth(),d.getDate()+(today?0:1),Math.floor(S/60),S%60).getTime();
-  return{ph:'off',left:(nxt-now)/1000,total:1,slot:0,next:nxt,today:today};
-}
-function audio(){try{if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume()}catch(e){}}
-function tone(f,t0,dur){if(!actx)return;var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+t0;o.frequency.value=f;
-g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.25,t+.03);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+dur+.05)}
-function fire(test){
-  if(!test){var k=dayKey();stats[k]=(stats[k]||0)+1;prune();sv('stats',stats)}
-  if(sound){audio();tone(660,0,.5);tone(880,.25,.7)}
-  try{if(navigator.vibrate)navigator.vibrate([200,100,200])}catch(e){}
-  if(test)testUntil=Date.now()+BREAK*1000;
-  if(notify||test){var res=notifyNow();
-    if(res!=='ok')setNote(res==='default'||res==='denied'||res==='unsupported'||res==='error'?'System notifications are blocked here. If this page is embedded, open it in its own browser tab. The in-page alert and chime still work.':'')}
-}
-function setNote(t){$('note').textContent=t||''}
-function notifyNow(){
-  try{
-    if(!('Notification' in window))return 'unsupported';
-    if(Notification.permission!=='granted')return Notification.permission;
-    if(lastNote){try{lastNote.close()}catch(e){}}
-    lastNote=new Notification('Time for an eye break',{body:'Look at something 20 feet away for 20 seconds.',requireInteraction:false});
-    lastNote.onerror=function(){setNote('The browser refused to show the notification. The in-page alert still works.')};
-    return 'ok';
-  }catch(e){return 'error'}
-}
-function fmt(s){s=Math.max(0,Math.ceil(s));var m=Math.floor(s/60),r=s%60;return (m<10?'0':'')+m+':'+(r<10?'0':'')+r}
+var INTERVAL = 20;
+var BREAK = 20;
 
-function tick(){
-  var now=Date.now(),r=compute(now);
-  if(r.ph!=='off'){
-    if(paused||(r.slot===lastFired)){if(paused)lastFired=r.slot}
-    else if(now-r.slot<5*60000){lastFired=r.slot;fire()}
-    else lastFired=r.slot;
+function ld(k,d) {
+  try {
+    var v = localStorage.getItem(k);
+    return v === null ? d : JSON.parse(v);
+  } catch(e) {
+    return d;
   }
+}
+
+function sv(k,v) {
+  try {
+    localStorage.setItem(k,JSON.stringify(v));
+  } catch(e) {}
+}
+
+var $ = function(i) {
+  return document.getElementById(i);
+};
+
+var st = ld('st','09:00');
+var en = ld('en','18:00');
+var sound = ld('sound',true);
+var notify = ld('notify',false);
+
+var paused = false;
+var lastFired = 0;
+var actx = null;
+
+var D = new Date();
+var key = D.getFullYear()+'-'+
+  (D.getMonth()+1)+'-'+D.getDate();
+
+var stats = ld('stats',{});
+
+if(!stats[key]) stats[key] = 0;
+
+try {
+  if('Notification' in window &&
+     Notification.permission === 'granted' &&
+     !notify) {
+    notify = true;
+    sv('notify',true);
+  }
+} catch(e) {}
+
+function mins(s) {
+  var p = (s || '0:0').split(':');
+  return (+p[0])*60+(+p[1] || 0);
+}
+
+function hm(ms) {
+  return new Date(ms).toLocaleTimeString([], {
+    hour:'numeric',
+    minute:'2-digit'
+  });
+}
+
+function compute(now) {
+
+  var d = new Date(now);
+
+  var mid = new Date(
+    d.getFullYear(),
+    d.getMonth(),
+    d.getDate()
+  ).getTime();
+
+  var m = (now-mid)/60000;
+
+  var S = mins(st);
+  var E = mins(en);
+
+  var slotM = Math.floor(m/INTERVAL)*INTERVAL;
+  var slot = mid+slotM*60000;
+
+  if(slotM >= S && slotM < E) {
+
+    var since = (now-slot)/1000;
+
+    if(since < BREAK) {
+      return {
+        ph:'break',
+        left:BREAK-since,
+        total:BREAK,
+        slot:slot
+      };
+    }
+
+    if(slotM+INTERVAL < E) {
+      return {
+        ph:'work',
+        left:(slot+INTERVAL*60000-now)/1000,
+        total:INTERVAL*60,
+        slot:slot
+      };
+    }
+  }
+
+  var today = m < S;
+
+  var nxt = new Date(
+    d.getFullYear(),
+    d.getMonth(),
+    d.getDate()+(today?0:1),
+    Math.floor(S/60),
+    S%60
+  ).getTime();
+
+  return {
+    ph:'off',
+    left:(nxt-now)/1000,
+    total:1,
+    slot:0,
+    next:nxt,
+    today:today
+  };
+}
+
+function audio() {
+  try {
+    if(!actx) {
+      actx = new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
+    }
+
+    if(actx.state === 'suspended') {
+      actx.resume();
+    }
+  } catch(e) {}
+}
+
+function tone(f,t0,dur) {
+
+  if(!actx) return;
+
+  var o = actx.createOscillator();
+  var g = actx.createGain();
+
+  var t = actx.currentTime+t0;
+
+  o.frequency.value = f;
+
+  g.gain.setValueAtTime(0,t);
+  g.gain.linearRampToValueAtTime(.25,t+.03);
+  g.gain.exponentialRampToValueAtTime(.001,t+dur);
+
+  o.connect(g);
+  g.connect(actx.destination);
+
+  o.start(t);
+  o.stop(t+dur+.05);
+}
+
+function fire() {
+
+  stats[key] = (stats[key] || 0)+1;
+  sv('stats',stats);
+
+  if(sound) {
+    audio();
+    tone(660,0,.5);
+    tone(880,.25,.7);
+  }
+
+  try {
+    if(navigator.vibrate) {
+      navigator.vibrate([200,100,200]);
+    }
+  } catch(e) {}
+
+  try {
+    if(notify &&
+       Notification.permission === 'granted') {
+
+      new Notification('Time for an eye break',{
+        body:'Look at something 20 feet away for 20 seconds.',
+        tag:'eye-break'
+      });
+    }
+  } catch(e) {}
+}
+
+function fmt(s) {
+
+  s = Math.max(0,Math.ceil(s));
+
+  var m = Math.floor(s/60);
+  var r = s%60;
+
+  return (m<10?'0':'')+m+':'+
+         (r<10?'0':'')+r;
+}
+
+function tick() {
+
+  var now = Date.now();
+  var r = compute(now);
+
+  if(r.ph !== 'off') {
+
+    if(paused || r.slot === lastFired) {
+
+      if(paused) lastFired = r.slot;
+
+    } else if(now-r.slot < 5*60000) {
+
+      lastFired = r.slot;
+      fire();
+
+    } else {
+
+      lastFired = r.slot;
+    }
+  }
+
   render(r);
 }
-function render(r){
-  var ph=paused?'paused':r.ph;document.body.dataset.phase=ph==='break'?'break':'work';
-  var h=$('h'),sub=$('sub'),tm=$('time'),lbl=$('lbl'),p=$('p');
-  tm.className='time';
-  if(paused){h.textContent='Reminders paused';sub.textContent='You won’t be alerted until you resume.';tm.textContent='Paused';tm.className='time sm';lbl.textContent='';p.style.strokeDashoffset=565.49}
-  else if(r.ph==='break'){h.textContent='Look 20 feet away';sub.textContent='Find something across the room or out a window. Relax your eyes and blink slowly.';tm.textContent=fmt(r.left);lbl.textContent='Resting your eyes';p.style.strokeDashoffset=565.49*(1-r.left/r.total)}
-  else if(r.ph==='work'){h.textContent='Eyes on the work';sub.textContent=notify?'Running. You’ll be alerted at '+hm(r.slot+iv*60000)+'.':'Running. Turn on notifications to be alerted from other windows.';tm.textContent=fmt(r.left);lbl.textContent='Until your next break';p.style.strokeDashoffset=565.49*(1-r.left/r.total)}
-  else{h.textContent='Off hours';sub.textContent='Reminders run between '+hm(new Date(2000,0,1,0,mins(st)).getTime())+' and '+hm(new Date(2000,0,1,0,mins(en)).getTime())+'. Change the hours below to run all day.';tm.textContent=hm(r.next);tm.className='time sm';lbl.textContent=(r.today?'Next reminder today':'Next reminder tomorrow');p.style.strokeDashoffset=565.49}
-  var showA=testUntil>Date.now()||(r.ph==='break'&&!paused&&r.slot!==dismissed);
-  $('alert').hidden=!showA;
-  $('atime').textContent=testUntil>Date.now()?fmt((testUntil-Date.now())/1000):((r.ph==='break'&&!paused)?fmt(r.left):'00:20');
-  $('pause').textContent=paused?'Resume reminders':'Pause reminders';
-  $('ntf').style.display=notify?'none':'';
-  $('snd').textContent=sound?'Sound on':'Sound off';$('snd').setAttribute('aria-pressed',sound);
-  $('stat').innerHTML='Breaks today: <b>'+count()+'</b>';
-  document.title=(r.ph==='break'&&!paused?'Look away · ':'')+(r.ph==='work'&&!paused?fmt(r.left)+' · ':'')+'20-20-20';
-  [].forEach.call($('iv').children,function(b){b.setAttribute('aria-pressed',+b.dataset.m===iv)});
+
+function render(r) {
+
+  var ph = paused ? 'paused' : r.ph;
+
+  document.body.dataset.phase =
+    ph === 'break' ? 'break' : 'work';
+
+  var h = $('h');
+  var sub = $('sub');
+  var tm = $('time');
+  var lbl = $('lbl');
+  var p = $('p');
+
+  tm.className = 'time';
+
+  if(paused) {
+
+    h.textContent = 'Reminders paused';
+    sub.textContent = 'You won’t be alerted until you resume.';
+    tm.textContent = 'Paused';
+    tm.className = 'time sm';
+    lbl.textContent = '';
+    p.style.strokeDashoffset = 565.49;
+
+  } else if(r.ph === 'break') {
+
+    h.textContent = 'Look 20 feet away';
+
+    sub.textContent =
+      'Find something across the room or out a window. Relax your eyes and blink slowly.';
+
+    tm.textContent = fmt(r.left);
+    lbl.textContent = 'Resting your eyes';
+
+    p.style.strokeDashoffset =
+      565.49*(1-r.left/r.total);
+
+  } else if(r.ph === 'work') {
+
+    h.textContent = 'Eyes on the work';
+
+    sub.textContent = notify
+      ? 'Running. Your next break is at '+hm(r.slot+INTERVAL*60000)+'.'
+      : 'Running. Turn on notifications to be alerted from other windows.';
+
+    tm.textContent = fmt(r.left);
+    lbl.textContent = 'Until your next break';
+
+    p.style.strokeDashoffset =
+      565.49*(1-r.left/r.total);
+
+  } else {
+
+    h.textContent = 'Off hours';
+
+    sub.textContent =
+      'Reminders run between '+
+      hm(new Date(2000,0,1,0,mins(st)).getTime())+
+      ' and '+
+      hm(new Date(2000,0,1,0,mins(en)).getTime())+'.';
+
+    tm.textContent = hm(r.next);
+    tm.className = 'time sm';
+
+    lbl.textContent = r.today
+      ? 'Next reminder today'
+      : 'Next reminder tomorrow';
+
+    p.style.strokeDashoffset = 565.49;
+  }
+
+  $('pause').textContent = paused
+    ? 'Resume reminders'
+    : 'Pause reminders';
+
+  $('ntf').style.display = notify ? 'none' : '';
+
+  $('snd').textContent = sound ? 'Sound on' : 'Sound off';
+
+  $('snd').setAttribute('aria-pressed',sound);
+
+  $('stat').innerHTML =
+    'Breaks today: <b>'+stats[key]+'</b>';
+
+  document.title =
+    (r.ph==='break'&&!paused?'Look away · ':'')+
+    (r.ph==='work'&&!paused?fmt(r.left)+' · ':'')+
+    '20-20-20';
 }
-$('ntf').onclick=function(){
+
+$('ntf').onclick = function() {
+
   audio();
-  function done(res){notify=(res==='granted');sv('notify',notify);
-    setNote(notify?'':'Notifications are blocked. Allow them in site settings, or open this page in its own tab. The in-page alert and chime still work.');tick()}
-  try{
-    if(!('Notification' in window)){setNote('This browser doesn’t support notifications. The in-page alert and chime still work.');return}
-    var p=Notification.requestPermission(done);
-    if(p&&p.then)p.then(done)
-  }catch(e){setNote('Notifications aren’t available here. The in-page alert and chime still work.')}
+
+  try {
+
+    if(!('Notification' in window)) {
+      alert('This browser doesn’t support notifications. The chime will still play.');
+      return;
+    }
+
+    Notification.requestPermission().then(function(res) {
+
+      notify = (res === 'granted');
+      sv('notify',notify);
+
+      if(!notify) {
+        alert('Notifications are blocked. Allow them in your browser’s site settings, then try again.');
+      }
+
+      tick();
+    });
+
+  } catch(e) {
+
+    alert('Notifications aren’t available here. The chime will still play.');
+  }
 };
-$('pause').onclick=function(){paused=!paused;tick()};
-$('test').onclick=function(){audio();fire(true);tick()};
-$('adm').onclick=function(){testUntil=0;dismissed=compute(Date.now()).slot;tick()};
-$('snd').onclick=function(){sound=!sound;sv('sound',sound);if(sound){audio();tone(660,0,.3)}tick()};
-$('st').value=st;$('en').value=en;
-$('st').onchange=function(){if(this.value){st=this.value;sv('st2',st)}tick()};
-$('en').onchange=function(){if(this.value){en=this.value;sv('en2',en)}tick()};
-[15,20,30].forEach(function(m){var b=document.createElement('button');b.textContent=m+' min';b.dataset.m=m;
-  b.onclick=function(){iv=m;sv('iv',m);var r=compute(Date.now());lastFired=r.ph==='off'?0:r.slot;tick()};$('iv').appendChild(b)});
+
+$('pause').onclick = function() {
+  paused = !paused;
+  tick();
+};
+
+$('snd').onclick = function() {
+
+  sound = !sound;
+  sv('sound',sound);
+
+  if(sound) {
+    audio();
+    tone(660,0,.3);
+  }
+
+  tick();
+};
+
+$('st').value = st;
+$('en').value = en;
+
+$('st').onchange = function() {
+
+  if(this.value) {
+    st = this.value;
+    sv('st',st);
+  }
+
+  tick();
+};
+
+$('en').onchange = function() {
+
+  if(this.value) {
+    en = this.value;
+    sv('en',en);
+  }
+
+  tick();
+};
+
 document.addEventListener('pointerdown',audio,{once:true});
-var r0=compute(Date.now());if(r0.ph!=='break'&&r0.ph!=='off')lastFired=r0.slot;
-try{var w=new Worker(URL.createObjectURL(new Blob(['setInterval(function(){postMessage(1)},1000)'])));w.onmessage=tick}catch(e){}
+
+var r0 = compute(Date.now());
+
+if(r0.ph !== 'break') {
+  lastFired = r0.slot;
+}
+
+try {
+
+  var w = new Worker(
+    URL.createObjectURL(
+      new Blob([
+        'setInterval(function(){postMessage(1)},1000)'
+      ])
+    )
+  );
+
+  w.onmessage = tick;
+
+} catch(e) {}
+
 setInterval(tick,500);
+
 document.addEventListener('visibilitychange',tick);
-try{if(window.top!==window.self)setNote('This page is embedded, so system notifications may be blocked. Open it in its own tab for them; the in-page alert works either way.')}catch(e){setNote('This page is embedded, so system notifications may be blocked. Open it in its own tab for them.')}
+
 tick();
+
 })();
 </script>
+
 </body>
 </html>
