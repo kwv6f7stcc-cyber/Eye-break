@@ -38,7 +38,7 @@ input[type=time]{font:inherit;color:var(--ink);background:transparent;border:1.5
 .stat b{color:var(--ink)}
 .fine{color:var(--mute);font-size:.8rem;text-align:center;max-width:36ch;margin:0}
 .note{color:var(--sun);font-size:.85rem;text-align:center;max-width:36ch;margin:0;min-height:1.2em}
-.alert{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+.alert{position:fixed;inset:0;z-index:50;background:#000;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
 .alert[hidden]{display:none}
 .alert h2{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:2.4rem;margin:0 0 8px;color:var(--sun)}
 .alert p{color:var(--mute);margin:0 0 18px;max-width:30ch}
@@ -78,7 +78,7 @@ var BREAK=20;
 function ld(k,d){try{var v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}}
 function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 var $=function(i){return document.getElementById(i)};
-var iv=ld('iv',20),st=ld('st','09:00'),en=ld('en','18:00'),sound=ld('sound',true),notify=ld('notify',false),paused=false,lastFired=0,actx=null,lastNote=null,testUntil=0,dismissed=0;
+var iv=ld('iv',20),st=ld('st2','00:00'),en=ld('en2','23:59'),sound=ld('sound',true),notify=ld('notify',false),paused=false,lastFired=0,actx=null,lastNote=null,testUntil=0,dismissed=0;
 var stats=ld('stats',{});
 function dayKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
 function count(){return stats[dayKey()]||0}
@@ -86,4 +86,101 @@ function prune(){var ks=Object.keys(stats);if(ks.length>7){ks.slice(0,ks.length-
 try{if('Notification' in window&&Notification.permission==='granted'&&!notify){notify=true;sv('notify',true)}}catch(e){}
 
 function mins(s){var p=(s||'0:0').split(':');return (+p[0])*60+(+p[1]||0)}
-function
+function hm(ms){return new Date(ms).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}
+function inWin(x){
+  var S=mins(st),E=mins(en);x=((x%1440)+1440)%1440;
+  if(S===E)return true;
+  return S<E?(x>=S&&x<E):(x>=S||x<E);
+}
+function compute(now){
+  var d=new Date(now),mid=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();
+  var m=(now-mid)/60000,S=mins(st),slotM=Math.floor(m/iv)*iv,slot=mid+slotM*60000;
+  if(inWin(slotM)){
+    var since=(now-slot)/1000;
+    if(since<BREAK)return{ph:'break',left:BREAK-since,total:BREAK,slot:slot};
+    if(inWin(slotM+iv))return{ph:'work',left:(slot+iv*60000-now)/1000,total:iv*60,slot:slot};
+  }
+  var today=m<S,nxt=new Date(d.getFullYear(),d.getMonth(),d.getDate()+(today?0:1),Math.floor(S/60),S%60).getTime();
+  return{ph:'off',left:(nxt-now)/1000,total:1,slot:0,next:nxt,today:today};
+}
+function audio(){try{if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume()}catch(e){}}
+function tone(f,t0,dur){if(!actx)return;var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+t0;o.frequency.value=f;
+g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.25,t+.03);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+dur+.05)}
+function fire(test){
+  if(!test){var k=dayKey();stats[k]=(stats[k]||0)+1;prune();sv('stats',stats)}
+  if(sound){audio();tone(660,0,.5);tone(880,.25,.7)}
+  try{if(navigator.vibrate)navigator.vibrate([200,100,200])}catch(e){}
+  if(test)testUntil=Date.now()+BREAK*1000;
+  if(notify||test){var res=notifyNow();
+    if(res!=='ok')setNote(res==='default'||res==='denied'||res==='unsupported'||res==='error'?'System notifications are blocked here. If this page is embedded, open it in its own browser tab. The in-page alert and chime still work.':'')}
+}
+function setNote(t){$('note').textContent=t||''}
+function notifyNow(){
+  try{
+    if(!('Notification' in window))return 'unsupported';
+    if(Notification.permission!=='granted')return Notification.permission;
+    if(lastNote){try{lastNote.close()}catch(e){}}
+    lastNote=new Notification('Time for an eye break',{body:'Look at something 20 feet away for 20 seconds.',requireInteraction:false});
+    lastNote.onerror=function(){setNote('The browser refused to show the notification. The in-page alert still works.')};
+    return 'ok';
+  }catch(e){return 'error'}
+}
+function fmt(s){s=Math.max(0,Math.ceil(s));var m=Math.floor(s/60),r=s%60;return (m<10?'0':'')+m+':'+(r<10?'0':'')+r}
+
+function tick(){
+  var now=Date.now(),r=compute(now);
+  if(r.ph!=='off'){
+    if(paused||(r.slot===lastFired)){if(paused)lastFired=r.slot}
+    else if(now-r.slot<5*60000){lastFired=r.slot;fire()}
+    else lastFired=r.slot;
+  }
+  render(r);
+}
+function render(r){
+  var ph=paused?'paused':r.ph;document.body.dataset.phase=ph==='break'?'break':'work';
+  var h=$('h'),sub=$('sub'),tm=$('time'),lbl=$('lbl'),p=$('p');
+  tm.className='time';
+  if(paused){h.textContent='Reminders paused';sub.textContent='You won’t be alerted until you resume.';tm.textContent='Paused';tm.className='time sm';lbl.textContent='';p.style.strokeDashoffset=565.49}
+  else if(r.ph==='break'){h.textContent='Look 20 feet away';sub.textContent='Find something across the room or out a window. Relax your eyes and blink slowly.';tm.textContent=fmt(r.left);lbl.textContent='Resting your eyes';p.style.strokeDashoffset=565.49*(1-r.left/r.total)}
+  else if(r.ph==='work'){h.textContent='Eyes on the work';sub.textContent=notify?'Running. You’ll be alerted at '+hm(r.slot+iv*60000)+'.':'Running. Turn on notifications to be alerted from other windows.';tm.textContent=fmt(r.left);lbl.textContent='Until your next break';p.style.strokeDashoffset=565.49*(1-r.left/r.total)}
+  else{h.textContent='Off hours';sub.textContent='Reminders run between '+hm(new Date(2000,0,1,0,mins(st)).getTime())+' and '+hm(new Date(2000,0,1,0,mins(en)).getTime())+'. Change the hours below to run all day.';tm.textContent=hm(r.next);tm.className='time sm';lbl.textContent=(r.today?'Next reminder today':'Next reminder tomorrow');p.style.strokeDashoffset=565.49}
+  var showA=testUntil>Date.now()||(r.ph==='break'&&!paused&&r.slot!==dismissed);
+  $('alert').hidden=!showA;
+  $('atime').textContent=testUntil>Date.now()?fmt((testUntil-Date.now())/1000):((r.ph==='break'&&!paused)?fmt(r.left):'00:20');
+  $('pause').textContent=paused?'Resume reminders':'Pause reminders';
+  $('ntf').style.display=notify?'none':'';
+  $('snd').textContent=sound?'Sound on':'Sound off';$('snd').setAttribute('aria-pressed',sound);
+  $('stat').innerHTML='Breaks today: <b>'+count()+'</b>';
+  document.title=(r.ph==='break'&&!paused?'Look away · ':'')+(r.ph==='work'&&!paused?fmt(r.left)+' · ':'')+'20-20-20';
+  [].forEach.call($('iv').children,function(b){b.setAttribute('aria-pressed',+b.dataset.m===iv)});
+}
+$('ntf').onclick=function(){
+  audio();
+  function done(res){notify=(res==='granted');sv('notify',notify);
+    setNote(notify?'':'Notifications are blocked. Allow them in site settings, or open this page in its own tab. The in-page alert and chime still work.');tick()}
+  try{
+    if(!('Notification' in window)){setNote('This browser doesn’t support notifications. The in-page alert and chime still work.');return}
+    var p=Notification.requestPermission(done);
+    if(p&&p.then)p.then(done)
+  }catch(e){setNote('Notifications aren’t available here. The in-page alert and chime still work.')}
+};
+$('pause').onclick=function(){paused=!paused;tick()};
+$('test').onclick=function(){audio();fire(true);tick()};
+$('adm').onclick=function(){testUntil=0;dismissed=compute(Date.now()).slot;tick()};
+$('snd').onclick=function(){sound=!sound;sv('sound',sound);if(sound){audio();tone(660,0,.3)}tick()};
+$('st').value=st;$('en').value=en;
+$('st').onchange=function(){if(this.value){st=this.value;sv('st2',st)}tick()};
+$('en').onchange=function(){if(this.value){en=this.value;sv('en2',en)}tick()};
+[15,20,30].forEach(function(m){var b=document.createElement('button');b.textContent=m+' min';b.dataset.m=m;
+  b.onclick=function(){iv=m;sv('iv',m);var r=compute(Date.now());lastFired=r.ph==='off'?0:r.slot;tick()};$('iv').appendChild(b)});
+document.addEventListener('pointerdown',audio,{once:true});
+var r0=compute(Date.now());if(r0.ph!=='break'&&r0.ph!=='off')lastFired=r0.slot;
+try{var w=new Worker(URL.createObjectURL(new Blob(['setInterval(function(){postMessage(1)},1000)'])));w.onmessage=tick}catch(e){}
+setInterval(tick,500);
+document.addEventListener('visibilitychange',tick);
+try{if(window.top!==window.self)setNote('This page is embedded, so system notifications may be blocked. Open it in its own tab for them; the in-page alert works either way.')}catch(e){setNote('This page is embedded, so system notifications may be blocked. Open it in its own tab for them.')}
+tick();
+})();
+</script>
+</body>
+</html>
