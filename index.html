@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,12 +19,22 @@
   --sun:#F0B35A;
 }
 
+body[data-theme="light"] {
+  color-scheme: light;
+  --bg:#F5F5F5;
+  --ink:#111111;
+  --mute:#5B5B5B;
+  --accent:#0F6B7B;
+  --track:#D9D9D9;
+  --sun:#C77B00;
+}
+
 * { box-sizing:border-box; }
 
 html,body {
   margin:0;
   min-height:100%;
-  background:#000000;
+  background:var(--bg);
 }
 
 body {
@@ -34,6 +43,7 @@ body {
   font-family:"DM Sans",system-ui,sans-serif;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
+  transition:background .2s ease,color .2s ease;
 }
 
 body[data-phase="break"] {
@@ -154,8 +164,8 @@ input:focus-visible {
 input[type=time] {
   font:inherit;
   color:var(--ink);
-  color-scheme:dark;
-  background:#000000;
+  color-scheme:inherit;
+  background:var(--bg);
   border:1.5px solid var(--track);
   border-radius:12px;
   padding:8px 10px;
@@ -195,7 +205,7 @@ input[type=time] {
 </style>
 </head>
 
-<body data-phase="work">
+<body data-phase="work" data-theme="dark">
 
 <main>
 
@@ -219,6 +229,7 @@ input[type=time] {
   <div class="row">
     <button class="main" id="ntf">Turn on notifications</button>
     <button id="pause">Pause reminders</button>
+    <button id="theme">Switch to light theme</button>
   </div>
 
   <div class="set">
@@ -276,6 +287,7 @@ var st = ld('st','09:00');
 var en = ld('en','18:00');
 var sound = ld('sound',true);
 var notify = ld('notify',false);
+var theme = ld('theme','dark');
 
 var paused = false;
 var lastFired = 0;
@@ -297,6 +309,16 @@ try {
     sv('notify',true);
   }
 } catch(e) {}
+
+function applyTheme(nextTheme) {
+  theme = nextTheme === 'light' ? 'light' : 'dark';
+  document.body.dataset.theme = theme;
+  document.documentElement.style.colorScheme = theme;
+  $('theme').textContent = theme === 'dark'
+    ? 'Switch to light theme'
+    : 'Switch to dark theme';
+  sv('theme',theme);
+}
 
 function mins(s) {
   var p = (s || '0:0').split(':');
@@ -597,6 +619,11 @@ $('pause').onclick = function() {
   tick();
 };
 
+$('theme').onclick = function() {
+  applyTheme(theme === 'dark' ? 'light' : 'dark');
+  tick();
+};
+
 $('snd').onclick = function() {
 
   sound = !sound;
@@ -659,6 +686,7 @@ setInterval(tick,500);
 
 document.addEventListener('visibilitychange',tick);
 
+applyTheme(theme);
 tick();
 
 })();
@@ -666,4 +694,3 @@ tick();
 
 </body>
 </html>
-
