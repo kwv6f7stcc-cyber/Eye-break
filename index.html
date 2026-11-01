@@ -161,6 +161,27 @@ input:focus-visible {
   outline-offset:2px;
 }
 
+.theme-toggle {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-width:160px;
+}
+
+.theme-icon {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:1.2em;
+  font-size:1.15rem;
+  line-height:1;
+}
+
+.theme-label {
+  white-space:nowrap;
+}
+
 input[type=time] {
   font:inherit;
   color:var(--ink);
@@ -229,7 +250,10 @@ input[type=time] {
   <div class="row">
     <button class="main" id="ntf">Turn on notifications</button>
     <button id="pause">Pause reminders</button>
-    <button id="theme">Switch to light theme</button>
+    <button id="theme" class="theme-toggle" aria-label="Toggle dark and light theme">
+      <span class="theme-icon" aria-hidden="true">☀️</span>
+      <span class="theme-label">Light mode</span>
+    </button>
   </div>
 
   <div class="set">
@@ -314,9 +338,20 @@ function applyTheme(nextTheme) {
   theme = nextTheme === 'light' ? 'light' : 'dark';
   document.body.dataset.theme = theme;
   document.documentElement.style.colorScheme = theme;
-  $('theme').textContent = theme === 'dark'
-    ? 'Switch to light theme'
-    : 'Switch to dark theme';
+
+  var icon = $('theme').querySelector('.theme-icon');
+  var label = $('theme').querySelector('.theme-label');
+
+  if (theme === 'dark') {
+    icon.textContent = '☀️';
+    label.textContent = 'Light mode';
+    $('theme').setAttribute('aria-label', 'Switch to light theme');
+  } else {
+    icon.textContent = '🌙';
+    label.textContent = 'Dark mode';
+    $('theme').setAttribute('aria-label', 'Switch to dark theme');
+  }
+
   sv('theme',theme);
 }
 
