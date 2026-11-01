@@ -5,40 +5,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>20-20-20 Eye Break</title>
-<meta name="theme-color" content="#E9F1F3">
+<meta name="theme-color" content="#000000">
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Instrument+Serif&display=swap">
 
 <style>
 :root {
-  --bg:#E9F1F3;
-  --ink:#12303A;
-  --mute:#5B7782;
-  --accent:#2F7F8F;
-  --track:#CFDFE3;
-  --sun:#B8690A;
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px);
-  padding-bottom:env(safe-area-inset-bottom,0px);
-}
-
-@media (prefers-color-scheme:dark) {
-  :root:not([data-theme="light"]) {
-    --bg:#0F1E24;
-    --ink:#E4EEF0;
-    --mute:#8CA6AE;
-    --accent:#6FB6C4;
-    --track:#1F3641;
-    --sun:#F0B35A;
-  }
-}
-
-:root[data-theme="dark"] {
-  --bg:#0F1E24;
-  --ink:#E4EEF0;
-  --mute:#8CA6AE;
+  color-scheme: dark;
+  --bg:#000000;
+  --ink:#F5F5F5;
+  --mute:#A3A3A3;
   --accent:#6FB6C4;
-  --track:#1F3641;
+  --track:#292929;
   --sun:#F0B35A;
 }
 
@@ -47,12 +25,15 @@
 html,body {
   margin:0;
   min-height:100%;
+  background:#000000;
 }
 
 body {
   background:var(--bg);
   color:var(--ink);
   font-family:"DM Sans",system-ui,sans-serif;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
 }
 
 body[data-phase="break"] {
@@ -155,12 +136,13 @@ button {
 
 button.main {
   background:var(--accent);
-  color:var(--bg);
+  color:#000000;
   font-weight:700;
 }
 
 button[aria-pressed="true"] {
   background:var(--track);
+  color:var(--ink);
 }
 
 button:focus-visible,
@@ -172,7 +154,8 @@ input:focus-visible {
 input[type=time] {
   font:inherit;
   color:var(--ink);
-  background:transparent;
+  color-scheme:dark;
+  background:#000000;
   border:1.5px solid var(--track);
   border-radius:12px;
   padding:8px 10px;
@@ -241,7 +224,6 @@ input[type=time] {
   <div class="set">
 
     <span>Automatic reminders every 20 minutes</span>
-
     <span>Active hours</span>
 
     <div class="row">
@@ -684,3 +666,4 @@ tick();
 
 </body>
 </html>
+
